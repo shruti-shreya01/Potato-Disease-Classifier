@@ -185,7 +185,7 @@ def load_and_preprocess_image(image):
     return img_array
 
 # Path to the pickle file
-file_path = r"C:\Users\shrey\Downloads\potato_disease (1).pkl"
+file_path = r"C:\Users\shrey\Downloads\potato_disease_final.pkl"
 
 # Check if the file exists before loading
 if not os.path.exists(file_path):
