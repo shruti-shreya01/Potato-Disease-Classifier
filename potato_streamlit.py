@@ -200,9 +200,9 @@
 import streamlit as st
 import pickle
 import tensorflow as tf
+import os
 from tensorflow.keras.preprocessing.image import img_to_array, load_img
 import numpy as np
-import os
 
 IMAGE_SIZE = 256
 
@@ -217,17 +217,25 @@ def load_and_preprocess_image(image):
 # Path to the pickle file
 file_path = "potato_pickle_final (1).pkl"
 
-# Load the architecture and weights path from the pickle file
-with open(file_path, "rb") as f:
-    data = pickle.load(f)
+# Check if file exists and load the model
+if os.path.exists(file_path):
+    with open(file_path, "rb") as f:
+        data = pickle.load(f)
 
-# Reconstruct the model from the architecture
-model = tf.keras.models.model_from_json(data["architecture"])
+    # Reconstruct the model from the architecture
+    model = tf.keras.models.model_from_json(data["architecture"])
 
-# Load the weights from the file
-model.load_weights(data["weights"])
+    # Load the weights from the file
+    model.load_weights(data["weights"])
+else:
+    st.error(f"Model file not found at path: {file_path}")
+    st.stop()  # Stop execution if file is not found
 
-# Now, the model is ready to use for predictions
+# Initialize session state variables
+if "prediction" not in st.session_state:
+    st.session_state["prediction"] = None
+if "confidence" not in st.session_state:
+    st.session_state["confidence"] = None
 
 # Streamlit app interface
 st.title("Potato Leaf Disease Classification")
@@ -262,8 +270,13 @@ if uploaded_file is not None:
     # Display the confidence score
     st.write(f"Confidence Score: **{st.session_state['confidence']:.2f}**")
 
+# Use a button to rerun the app conditionally
 if st.button("Rerun"):
-    st.experimental_rerun()
+    # Check if necessary state is initialized before rerunning
+    if st.session_state["prediction"] is not None and st.session_state["confidence"] is not None:
+        st.experimental_rerun()
+    else:
+        st.warning("Please upload an image first.")
 
 st.sidebar.title("About")
 st.sidebar.info("This app is designed to help farmers and agronomists identify diseases in potato leaves using AI technology.")
@@ -273,3 +286,4 @@ st.sidebar.write("This model classifies potato leaf diseases with high accuracy.
 st.sidebar.write("- Early Blight")
 st.sidebar.write("- Late Blight")
 st.sidebar.write("- Healthy")
+
