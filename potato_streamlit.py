@@ -207,7 +207,7 @@ def reset_session():
     st.session_state["output"] = None
 
 # File uploader for the model pickle file
-model_file = st.file_uploader("Upload the model pickle file...", type=["pkl"])
+# model_file = st.file_uploader("Upload the model pickle file...", type=["pkl"])
 
 # File uploader for image input
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
