@@ -152,33 +152,68 @@ st.write("Upload an image of a potato leaf to classify the disease.")
 # File uploader for image input
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"], key="uploaded_file")
 
+# if uploaded_file is not None:
+#     # Load and preprocess the uploaded image
+#     img_array = load_and_preprocess_image(uploaded_file)
+
+#     # Predict the class of the leaf disease
+#     prediction = model.predict(img_array)
+#     predicted_class = np.argmax(prediction, axis=1)[0]
+#     confidence = np.max(prediction)  # Confidence score
+
+#     # Store results in session state
+#     st.session_state["prediction"] = predicted_class
+#     st.session_state["confidence"] = confidence
+
+#     # Display the uploaded image
+#     st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
+
+#     # Map predicted class to the disease name
+#     disease_name = class_names.get(predicted_class, "Unknown")
+
+#     # Log raw prediction
+#     print("Raw Prediction:", prediction)  # Log raw prediction
+#     # Log predicted class and confidence
+#     print(f"Predicted Class: {predicted_class}, Confidence: {confidence}")
+
+#     # Display the results in Streamlit
+#     st.write(f"Predicted Disease: **{disease_name}**")
+#     st.write(f"Confidence Score: **{confidence:.2f}**")
+
+
 if uploaded_file is not None:
-    # Load and preprocess the uploaded image
-    img_array = load_and_preprocess_image(uploaded_file)
+    try:
+        # Display the uploaded image
+        image = Image.open(uploaded_file).convert('RGB')
+        st.image(image, caption='Uploaded Image.', use_column_width=True)
+        st.write("Classifying...")
 
-    # Predict the class of the leaf disease
-    prediction = model.predict(img_array)
-    predicted_class = np.argmax(prediction, axis=1)[0]
-    confidence = np.max(prediction)  # Confidence score
+        # Preprocess the image
+        processed_image = preprocess_image(image)
 
-    # Store results in session state
-    st.session_state["prediction"] = predicted_class
-    st.session_state["confidence"] = confidence
+        # Make prediction
+        predictions = model.predict(processed_image)
 
-    # Display the uploaded image
-    st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
+        # Ensure the predictions are correctly normalized
+        predictions = tf.nn.softmax(predictions).numpy()  # Use softmax to normalize
 
-    # Map predicted class to the disease name
-    disease_name = class_names.get(predicted_class, "Unknown")
+        confidence = np.max(predictions) * 100
+        predicted_class = class_names[np.argmax(predictions)]
 
-    # Log raw prediction
-    print("Raw Prediction:", prediction)  # Log raw prediction
-    # Log predicted class and confidence
-    print(f"Predicted Class: {predicted_class}, Confidence: {confidence}")
+        # Display prediction
+        st.write(f"*Predicted Class:* {predicted_class}")
+        st.write(f"*Confidence:* {confidence:.2f}%")
 
-    # Display the results in Streamlit
-    st.write(f"Predicted Disease: **{disease_name}**")
-    st.write(f"Confidence Score: **{confidence:.2f}**")
+        # Optional: Display a bar chart of all class probabilities
+        st.write("### Prediction Probabilities")
+        prob_df = {class_names[i]: float(predictions[0][i]) * 100 for i in range(len(class_names))}
+        st.bar_chart(prob_df)
+    
+    except Exception as e:
+        st.error(f"An error occurred during prediction: {e}")
+
+
+
 
 # Use a button to rerun the app conditionally
 if st.button("Rerun"):
