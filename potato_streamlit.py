@@ -106,12 +106,87 @@
 
 
 
+# import streamlit as st
+# import pickle
+# import tensorflow as tf
+# from tensorflow.keras.preprocessing.image import img_to_array, load_img
+# import numpy as np
+# import os
+
+# IMAGE_SIZE = 256
+
+# # Function to load and preprocess the uploaded image
+# def load_and_preprocess_image(image):
+#     img = load_img(image, target_size=(IMAGE_SIZE, IMAGE_SIZE))
+#     img_array = img_to_array(img)
+#     img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
+#     img_array = img_array / 255.0  # Normalize to [0, 1]
+#     return img_array
+
+# # Path to the pickle file
+# file_path = r"C:\Users\shrey\Downloads\potato_pickle.pkl"
+
+# # Streamlit app interface
+# st.title("Potato Leaf Disease Classification")
+# st.write("Upload an image of a potato leaf to classify the disease.")
+
+# def reset_session():
+#     st.session_state["uploaded_file"] = None
+#     st.session_state["output"] = None
+
+# # File uploader for image input
+# uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
+
+# if uploaded_file is not None:
+#     # Load and preprocess the uploaded image
+#     img_array = load_and_preprocess_image(uploaded_file)
+
+#     # Check if the pickle file exists before loading
+#     if not os.path.exists(file_path):
+#         st.error(f"File not found: {file_path}")
+#     else:
+#         # Load the model from the pickle file
+#         with open(file_path, "rb") as f:
+#             model = pickle.load(f)
+
+#         # Predict the class of the leaf disease
+#         prediction = model.predict(img_array)
+#         predicted_class = np.argmax(prediction, axis=1)[0]
+#         confidence = np.max(prediction)  # Confidence score
+
+#         # Display the uploaded image
+#         st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
+
+#         # Map predicted class to the disease name (assuming you have a dictionary for class names)
+#         class_names = {0: "Early Blight", 1: "Late Blight", 2: "Healthy"}  # Example classes
+#         disease_name = class_names.get(predicted_class, "Unknown")
+
+#         # Display the prediction result
+#         st.write(f"Predicted Disease: **{disease_name}**")
+#         st.write(f"Confidence Score: **{confidence:.2f}**")
+
+# if st.button("Rerun"):
+#     st.experimental_rerun()
+
+# if st.button("Reset"):
+#     reset_session()
+
+# st.sidebar.title("About")
+# st.sidebar.info("This app is designed to help farmers and agronomists identify diseases in potato leaves using AI technology.")
+
+# st.sidebar.subheader("About the Model")
+# st.sidebar.write("This model classifies potato leaf diseases with high accuracy. The classes are:")
+# st.sidebar.write("- Early Blight")
+# st.sidebar.write("- Late Blight")
+# st.sidebar.write("- Healthy")
+
+
+
 import streamlit as st
 import pickle
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import img_to_array, load_img
 import numpy as np
-import os
 
 IMAGE_SIZE = 256
 
@@ -123,9 +198,6 @@ def load_and_preprocess_image(image):
     img_array = img_array / 255.0  # Normalize to [0, 1]
     return img_array
 
-# Path to the pickle file
-file_path = r"C:\Users\shrey\Downloads\potato_pickle.pkl"
-
 # Streamlit app interface
 st.title("Potato Leaf Disease Classification")
 st.write("Upload an image of a potato leaf to classify the disease.")
@@ -134,36 +206,35 @@ def reset_session():
     st.session_state["uploaded_file"] = None
     st.session_state["output"] = None
 
+# File uploader for the model pickle file
+model_file = st.file_uploader("Upload the model pickle file...", type=["pkl"])
+
 # File uploader for image input
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
-if uploaded_file is not None:
+if uploaded_file is not None and model_file is not None:
     # Load and preprocess the uploaded image
     img_array = load_and_preprocess_image(uploaded_file)
 
-    # Check if the pickle file exists before loading
-    if not os.path.exists(file_path):
-        st.error(f"File not found: {file_path}")
-    else:
-        # Load the model from the pickle file
-        with open(file_path, "rb") as f:
-            model = pickle.load(f)
+    # Load the model from the uploaded pickle file
+    with open(model_file, "rb") as f:
+        model = pickle.load(f)
 
-        # Predict the class of the leaf disease
-        prediction = model.predict(img_array)
-        predicted_class = np.argmax(prediction, axis=1)[0]
-        confidence = np.max(prediction)  # Confidence score
+    # Predict the class of the leaf disease
+    prediction = model.predict(img_array)
+    predicted_class = np.argmax(prediction, axis=1)[0]
+    confidence = np.max(prediction)  # Confidence score
 
-        # Display the uploaded image
-        st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
+    # Display the uploaded image
+    st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
 
-        # Map predicted class to the disease name (assuming you have a dictionary for class names)
-        class_names = {0: "Early Blight", 1: "Late Blight", 2: "Healthy"}  # Example classes
-        disease_name = class_names.get(predicted_class, "Unknown")
+    # Map predicted class to the disease name
+    class_names = {0: "Early Blight", 1: "Late Blight", 2: "Healthy"}  # Example classes
+    disease_name = class_names.get(predicted_class, "Unknown")
 
-        # Display the prediction result
-        st.write(f"Predicted Disease: **{disease_name}**")
-        st.write(f"Confidence Score: **{confidence:.2f}**")
+    # Display the prediction result
+    st.write(f"Predicted Disease: **{disease_name}**")
+    st.write(f"Confidence Score: **{confidence:.2f}**")
 
 if st.button("Rerun"):
     st.experimental_rerun()
@@ -179,8 +250,6 @@ st.sidebar.write("This model classifies potato leaf diseases with high accuracy.
 st.sidebar.write("- Early Blight")
 st.sidebar.write("- Late Blight")
 st.sidebar.write("- Healthy")
-
-
 
 
 
