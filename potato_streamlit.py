@@ -214,20 +214,24 @@ def load_and_preprocess_image(image):
     img_array = img_array / 255.0  # Normalize to [0, 1]
     return img_array
 
-# Relative path to the pickle file (the file should be in the same directory as this script)
-file_path = 'potato_pickle_final.pkl'
+import pickle
+import tensorflow as tf
 
-# Check if the file exists before loading
-if not os.path.exists(file_path):
-    st.error(f"Model file not found: {file_path}. Please ensure the model file is available.")
-else:
-    # Load the model from the pickle file
-    with open(file_path, "rb") as f:
-        data = pickle.load(f)
+# Path to the pickle file
+file_path = "potato_pickle_final.pkl"
 
-    # Reconstruct the model from the architecture
-    model = tf.keras.models.model_from_json(data["architecture"])
-    model.load_weights(data["weights"])  # Load the model's weights
+# Load the architecture and weights path from the pickle file
+with open(file_path, "rb") as f:
+    data = pickle.load(f)
+
+# Reconstruct the model from the architecture
+model = tf.keras.models.model_from_json(data["architecture"])
+
+# Load the weights from the file
+model.load_weights(data["weights"])
+
+# Now, the model is ready to use for predictions
+
 
     # Streamlit app interface
     st.title("Potato Leaf Disease Classification")
