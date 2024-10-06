@@ -60,30 +60,30 @@
 #     # File uploader for image input
 #     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
-#     if uploaded_file is not None:
-#         # Load and preprocess the uploaded image
-#         img_array = load_and_preprocess_image(uploaded_file)
+    # if uploaded_file is not None:
+    #     # Load and preprocess the uploaded image
+    #     img_array = load_and_preprocess_image(uploaded_file)
 
-#                 # Predict the class of the leaf disease
-#         prediction = model.predict(img_array)
-#         predicted_class = np.argmax(prediction, axis=1)[0]
-#         confidence = np.max(prediction)  # Confidence score
+    #             # Predict the class of the leaf disease
+    #     prediction = model.predict(img_array)
+    #     predicted_class = np.argmax(prediction, axis=1)[0]
+    #     confidence = np.max(prediction)  # Confidence score
 
-#         # Display the uploaded image
-#         st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
+    #     # Display the uploaded image
+    #     st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
 
 
 
-#         # Map predicted class to the disease name (assuming you have a dictionary for class names)
-#         class_names = {0: "Early Blight", 1: "Late Blight", 2: "Healthy"}  # Example classes
-#         disease_name = class_names.get(predicted_class, "Unknown")
+    #     # Map predicted class to the disease name (assuming you have a dictionary for class names)
+    #     class_names = {0: "Early Blight", 1: "Late Blight", 2: "Healthy"}  # Example classes
+    #     disease_name = class_names.get(predicted_class, "Unknown")
 
-#         # Display the prediction result
-#         st.write(f"Predicted Disease: **{disease_name}**")
+    #     # Display the prediction result
+    #     st.write(f"Predicted Disease: **{disease_name}**")
 
-#                 # Display the prediction result and confidence score
+    #             # Display the prediction result and confidence score
 
-#         st.write(f"Confidence Score: **{confidence:.2f}**")
+    #     st.write(f"Confidence Score: **{confidence:.2f}**")
 
 #     if st.button("Rerun"):
 #       st.experimental_rerun()
@@ -111,6 +111,7 @@ import pickle
 import tensorflow as tf
 import os
 from tensorflow.keras.preprocessing.image import img_to_array, load_img
+from PIL import Image, ImageOps
 import numpy as np
 
 IMAGE_SIZE = 256
