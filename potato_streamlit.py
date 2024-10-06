@@ -274,7 +274,7 @@ if uploaded_file is not None:
 if st.button("Rerun"):
     # Check if necessary state is initialized before rerunning
     if st.session_state["prediction"] is not None and st.session_state["confidence"] is not None:
-        st.experimental_rerun()
+        st.rerun()
     else:
         st.warning("Please upload an image first.")
 
