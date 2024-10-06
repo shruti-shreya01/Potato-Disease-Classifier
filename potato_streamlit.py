@@ -215,7 +215,7 @@ def load_and_preprocess_image(image):
     return img_array
 
 # Path to the pickle file
-file_path = "potato_pickle_final.pkl"
+file_path = "potato_pickle_final (1).pkl"
 
 # Load the architecture and weights path from the pickle file
 with open(file_path, "rb") as f:
