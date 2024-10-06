@@ -28,7 +28,7 @@ resize_and_rescale = tf.keras.Sequential([
 
 
 # Path to the pickle file
-file_path = r"C:\Users\shrey\Downloads\potato_disease (1).pkl"
+file_path = r"C:\Users\shrey\Downloads\potato_pickle.pkl"
 
 # Check if the file exists before loading
 if not os.path.exists(file_path):
