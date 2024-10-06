@@ -230,6 +230,8 @@ if os.path.exists(file_path):
 else:
     st.error(f"Model file not found at path: {file_path}")
     st.stop()  # Stop execution if file is not found
+class_names = {0: "Early Blight", 1: "Late Blight", 2: "Healthy"}
+
 
 # Initialize session state variables
 if "prediction" not in st.session_state:
