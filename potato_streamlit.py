@@ -263,12 +263,20 @@ if uploaded_file is not None:
     # Map predicted class to the disease name (assuming you have a dictionary for class names)
     class_names = {0: "Early Blight", 1: "Late Blight", 2: "Healthy"}  # Example classes
     disease_name = class_names.get(predicted_class, "Unknown")
-
-    # Display the prediction result
+    # Inside the Streamlit app, after making a prediction
+    prediction = model.predict(img_array)
+    print("Raw Prediction:", prediction)  # Log raw prediction
+    
+    predicted_class = np.argmax(prediction, axis=1)[0]
+    confidence = np.max(prediction)  # Confidence score
+    
+    # Log predicted class and confidence
+    print(f"Predicted Class: {predicted_class}, Confidence: {confidence}")
+    
+    # Display the results in Streamlit
     st.write(f"Predicted Disease: **{disease_name}**")
+    st.write(f"Confidence Score: **{confidence:.2f}**")
 
-    # Display the confidence score
-    st.write(f"Confidence Score: **{st.session_state['confidence']:.2f}**")
 
 # Use a button to rerun the app conditionally
 if st.button("Rerun"):
